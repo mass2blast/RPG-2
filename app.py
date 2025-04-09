@@ -1,10 +1,10 @@
 import streamlit as st
 import openai
 
-# Set API key securely from Streamlit secrets
+# Set OpenAI API key from secrets
 openai.api_key = st.secrets["OPENAI_API_KEY"]
 
-# Page configuration
+# Streamlit page setup
 st.set_page_config(page_title="Realistic Prompt Generator", page_icon="🎨")
 st.title("🧠 Ultra-Realistic Prompt Generator")
 
@@ -83,14 +83,17 @@ Abstract/Conceptual Notes: {abstract}
 Extra Notes: {notes}"""
 
         # OpenAI API call using the updated method for completions
-        response = openai.Completion.create(
-            model="gpt-4",  # You can adjust this to any available model (e.g., "gpt-3.5-turbo" for cheaper, faster models)
-            prompt=f"{system_prompt}\n{user_combined}",
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",  # Using gpt-3.5-turbo for free API users
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_combined}
+            ],
             temperature=0.8,
             max_tokens=400
         )
 
-        result = response.choices[0].text.strip()
+        result = response["choices"][0]["message"]["content"]
 
         st.markdown("### 🖼️ Final Prompt")
         st.code(result, language="text")
