@@ -83,17 +83,14 @@ Abstract/Conceptual Notes: {abstract}
 Extra Notes: {notes}"""
 
         # OpenAI API call using the updated method for completions
-        response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",  # Using gpt-3.5-turbo for free API users
-            messages=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_combined}
-            ],
+        response = openai.Completion.create(
+            model="gpt-3.5-turbo",  # Using gpt-3.5-turbo for free API
+            prompt=f"{system_prompt}\n{user_combined}",
             temperature=0.8,
             max_tokens=400
         )
 
-        result = response["choices"][0]["message"]["content"]
+        result = response["choices"][0]["text"].strip()
 
         st.markdown("### 🖼️ Final Prompt")
         st.code(result, language="text")
